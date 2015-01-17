@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH << File.join(Dir.pwd, 'lib')
+
+require 'field_marshal'
+
+FieldMarshal::CLI.start(ARGV)

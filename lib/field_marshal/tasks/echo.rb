@@ -9,16 +9,18 @@ module FieldMarshal
 
       def run(channel)
         channel.exec("echo #{input}") do |ch, success|
-          raise "could not execute command" unless success
+          return false unless success
 
           ch.on_data do |c, data|
-            $stdout.print(data)
+            $stdout.print data
           end
 
           ch.on_extended_data do |c, type, data|
-            $stderr.print(data)
+            $stderr.print data
           end
         end
+        channel.wait
+        true
       end
     end
   end

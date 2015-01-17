@@ -1,3 +1,4 @@
+require 'active_support/core_ext/array/wrap'
 require 'net/ssh'
 require 'virtus'
 
@@ -9,11 +10,18 @@ module FieldMarshal
     attribute :user, String, default: 'ec2-user'
     attribute :key,  String
 
-    def run(task)
+    def run(tasks)
+      tasks = Array.wrap(tasks).compact
       Net::SSH.start(host, user, keys: [key]) do |ssh|
         ssh.open_channel do |channel|
-          task.run(channel)
-        end.wait
+          tasks.each do |task|
+            rv = task.run(channel)
+            unless rv
+              $stderr.puts "task failed; breaking out of sequence"
+              break
+            end
+          end
+        end
       end
     end
   end

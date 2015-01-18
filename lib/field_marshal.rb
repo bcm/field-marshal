@@ -4,8 +4,11 @@ module FieldMarshal
   autoload :TaskRunner,          'field_marshal/task_runner'
   autoload :TaskSpec,            'field_marshal/task_spec'
 
+  module Deployers
+    autoload :Heroku,            'field_marshal/deployers/heroku'
+  end
+
   module Tasks
-    autoload :Echo,              'field_marshal/tasks/echo'
     autoload :CloneGitRepo,      'field_marshal/tasks/clone_git_repo'
 
     module Heroku

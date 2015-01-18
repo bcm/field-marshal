@@ -9,8 +9,14 @@ module FieldMarshal
     class Config
       include Virtus.value_object(strict: true)
 
-      attribute :host, String
-      attribute :key,  String
+      attribute :host,    String
+      attribute :key,     String
+      attribute :git_url, String
+      attribute :heroku,  Deployers::Heroku
+
+      def working_dir
+        @working_dir ||= git_url.split('/').pop
+      end
     end
 
     attribute :config, Config
@@ -18,11 +24,11 @@ module FieldMarshal
 
     def self.load(path)
       yaml = YAML.load_file(path)
-      tasks = yaml['tasks'].map do |(class_name, cfg)|
-        task_class = "field_marshal/tasks/#{class_name}".camelize.constantize
-        task_class.new(cfg)
-      end
-      new(config: yaml['config'], tasks: tasks)
+      config = Config.new(yaml['config'])
+      tasks = yaml['tasks'].map { |t| "field_marshal/tasks/#{t}".camelize.constantize.new(config: config) }
+      new(config: config, tasks: tasks)
     end
+
+    class ConfigError < StandardError; end
   end
 end

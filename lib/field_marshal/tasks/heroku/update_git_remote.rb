@@ -3,13 +3,14 @@ module FieldMarshal
     module Heroku
       class UpdateGitRemote < Task
         def run(runner)
-          begin
-            runner.exec("cd #{config.working_dir}; git remote | grep #{remote_name}")
-          rescue TaskRunner::TaskFailure => e
-            raise e if e.status > 1
-            runner.exec("cd #{config.working_dir}; git remote add #{remote_name} #{config.heroku.app['git_url']}")
-          end
-          runner.exec("cd #{config.working_dir}; git fetch #{remote_name}")
+          runner.exec <<-SH
+cd #{config.working_dir};
+  git remote | grep #{remote_name} > /dev/null;
+  if [ $? == 1 ]; then
+    git remote add #{remote_name} #{config.heroku.app['git_url']};
+  fi
+  git fetch #{remote_name}
+SH
         end
 
         def remote_name

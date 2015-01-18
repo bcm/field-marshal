@@ -9,10 +9,6 @@ module FieldMarshal
       attribute :app_name,  String
       attribute :api_token, String
 
-      def app
-        @app ||= api.app.info(app_name)
-      end
-
       def api
         @api ||= begin
           begin
@@ -21,6 +17,14 @@ module FieldMarshal
             raise ConfigError, "Access to Heroku app denied"
           end
         end
+      end
+
+      def app
+        @app ||= api.app.info(app_name)
+      end
+
+      def turn_on_maintenance_mode
+        api.app.update(app_name, maintenance: true)
       end
     end
   end

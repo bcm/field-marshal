@@ -5,5 +5,9 @@ module FieldMarshal
     include Virtus.value_object(strict: true)
 
     attribute :config, TaskSpec::Config
+
+    def deployer
+      config.heroku
+    end
   end
 end

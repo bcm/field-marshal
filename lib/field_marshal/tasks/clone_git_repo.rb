@@ -1,9 +1,9 @@
 module FieldMarshal
   module Tasks
     class CloneGitRepo < Task
-      def run(runner)
-        # XXX: get the remote git repo's ssh key onto the server
-        runner.exec("if [ ! -d #{config.working_dir} ]; then git clone #{config.git_url}; fi")
+      def run(remote_host)
+        # XXX: get the remote git repo's ssh key onto the remote host
+        remote_host.exec("if [ ! -d #{config.working_dir} ]; then git clone #{config.git_url}; fi")
       end
 
       def desc

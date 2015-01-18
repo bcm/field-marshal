@@ -12,26 +12,34 @@ module FieldMarshal
       attribute :host,       String
       attribute :key,        String
       attribute :git_url,    String
-      attribute :git_branch, String,            default: 'master'
-      attribute :heroku,     Deployers::Heroku
+      attribute :git_branch, String, default: 'master'
+      attribute :deploy,     Hash
 
       def working_dir
         @working_dir ||= git_url.split('/').pop
       end
 
       def remote_git_url
-        @remote_git_url ||= heroku.app['git_url']
+        @remote_git_url ||= deployer.remote_git_url
       end
 
       def git_remote
-        @git_remote ||= begin
-          remote_git_url =~ /^git\@heroku\.com\:(.+)\.git$/
-          $1
-        end
+        @git_remote ||= deployer.git_remote
       end
 
-      def context
-        @context ||= {}
+      def deployer
+        @deployer ||= case deploy['type']
+        when 'heroku'
+          Deployers::Heroku.new(deploy.merge(
+            git_url:     git_url,
+            git_branch:  git_branch,
+            working_dir: working_dir
+          ))
+        when nil
+          raise ConfigError, "deploy type not specified"
+        else
+          raise ConfigError, "unknown deploy type '#{deploy['type']}'"
+        end
       end
     end
 

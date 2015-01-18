@@ -13,7 +13,7 @@ SH
       end
 
       def desc
-        "Update remote git repo at #{config.remote_git_url}"
+        "Update remote git repository"
       end
     end
   end

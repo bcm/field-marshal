@@ -7,7 +7,7 @@ module FieldMarshal
     attribute :config, TaskSpec::Config
 
     def deployer
-      config.heroku
+      config.deployer
     end
   end
 end

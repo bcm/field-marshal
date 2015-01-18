@@ -7,7 +7,7 @@ module FieldMarshal
       end
 
       def desc
-        "Clone git repo at #{config.git_url}"
+        "Clone application git repository"
       end
     end
   end

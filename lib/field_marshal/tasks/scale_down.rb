@@ -1,18 +1,18 @@
 module FieldMarshal
   module Tasks
-    class TurnOnMaintenanceMode < Task
+    class ScaleDown < Task
       def run(remote_host)
         if config.context[:migration_count].to_i > 0
-          deployer.turn_on_maintenance_mode
+          deployer.scale_down
         end
       end
 
       def rollback(remote_host)
-        deployer.turn_off_maintenance_mode
+        deployer.scale_up
       end
 
       def desc
-        "Turn on maintenance mode"
+        "Scale down application processes"
       end
     end
   end

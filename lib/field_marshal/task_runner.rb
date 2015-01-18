@@ -22,7 +22,7 @@ module FieldMarshal
                 $stdout.puts "Rolling back: #{t.desc}"
                 begin
                   t.rollback(remote_host)
-                rescue e
+                rescue StandardError => e
                   $stderr.puts("ROLLBACK FAILURE! #{e}")
                 end
               end

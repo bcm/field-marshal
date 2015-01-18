@@ -26,6 +26,10 @@ module FieldMarshal
       def turn_on_maintenance_mode
         api.app.update(app_name, maintenance: true)
       end
+
+      def turn_off_maintenance_mode
+        api.app.update(app_name, maintenance: false)
+      end
     end
   end
 end

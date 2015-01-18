@@ -12,10 +12,7 @@ module FieldMarshal
   module Tasks
     autoload :CloneGitRepo,                 'field_marshal/tasks/clone_git_repo'
     autoload :DetectPendingRailsMigrations, 'field_marshal/tasks/detect_pending_rails_migrations'
+    autoload :TurnOnMaintenanceMode,        'field_marshal/tasks/turn_on_maintenance_mode'
     autoload :UpdateGitRemote,              'field_marshal/tasks/update_git_remote'
-
-    module Heroku
-      autoload :TurnOnMaintenanceMode,      'field_marshal/tasks/heroku/turn_on_maintenance_mode'
-    end
   end
 end

@@ -5,20 +5,16 @@ module FieldMarshal
         def run(runner)
           runner.exec <<-SH
 cd #{config.working_dir};
-  git remote | grep #{remote_name} > /dev/null;
+  git remote | grep #{config.git_remote} > /dev/null;
   if [ $? == 1 ]; then
-    git remote add #{remote_name} #{config.heroku.app['git_url']};
+    git remote add #{config.git_remote} #{config.remote_git_url};
   fi
-  git fetch #{remote_name}
+  git fetch #{config.git_remote}
 SH
         end
 
-        def remote_name
-          @remote_name ||= config.heroku.app_name
-        end
-
         def desc
-          "Update Heroku git repo (remote #{remote_name})"
+          "Update remote git repo at #{config.remote_git_url}"
         end
       end
     end

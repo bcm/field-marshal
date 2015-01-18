@@ -21,13 +21,14 @@ module FieldMarshal
       end
     end
 
-    def exec(command)
+    def exec(command, &block)
       block = Proc.new do |chan|
         chan.exec(command) do |ch, success|
           raise TaskUnsuccessful unless success
 
           ch.on_data do |c, data|
             $stdout.print "    #{data}"
+            yield(c, data) if block_given?
           end
 
           ch.on_extended_data do |c, type, data|

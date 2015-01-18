@@ -22,8 +22,7 @@ module FieldMarshal
     end
 
     def exec(command)
-      failed = false
-      $stderr.puts "  #{command}"
+      $stdout.puts "  #{command}"
       @ssh.open_channel do |channel|
         channel.exec(command) do |ch, success|
           raise TaskUnsuccessful unless success

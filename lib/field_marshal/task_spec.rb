@@ -49,7 +49,10 @@ module FieldMarshal
     def self.load(path)
       yaml = YAML.load_file(path)
       config = Config.new(yaml['config'])
-      tasks = yaml['tasks'].map { |t| "field_marshal/tasks/#{t}".camelize.constantize.new(config: config) }
+      tasks = yaml['tasks'].map do |t|
+        klass = "field_marshal/tasks/#{t['name']}".camelize.constantize
+        klass.new(config: config, conditions: {if: t['if'], unless: t['unless']})
+      end
       new(config: config, tasks: tasks)
     end
 

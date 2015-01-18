@@ -23,12 +23,12 @@ module FieldMarshal
           raise ExecUnsuccessful unless success
 
           ch.on_data do |c, data|
-            $stdout.print "    #{data}"
+            $stdout.print data
             yield(c, data) if block_given?
           end
 
           ch.on_extended_data do |c, type, data|
-            $stderr.print "    #{data}"
+            $stderr.print data
           end
 
           ch.on_request "exit-status" do |c, data|
@@ -37,7 +37,7 @@ module FieldMarshal
           end
         end
       end
-      $stdout.puts "  #{command}"
+      $stdout.puts "$ #{command}"
       ssh.open_channel(&block).tap do |channel|
         channel.wait
       end

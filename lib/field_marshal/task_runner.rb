@@ -12,13 +12,18 @@ module FieldMarshal
       remote_host.connect do
         succeeded = []
         spec.tasks.each_with_index do |task, i|
-          $stdout.puts "#{i+1}: #{task.desc}"
+          $stdout.puts "=====> #{task.desc}"
           begin
-            task.run(remote_host)
+            if task.runnable?
+              task.run(remote_host)
+            else
+              $stdout.puts "...skipping"
+            end
             succeeded << task
+            $stdout.puts ""
           rescue
             succeeded.reverse.each do |t|
-              if t.respond_to?(:rollback)
+              if t.respond_to?(:rollback) && task.runnable?
                 $stdout.puts "Rolling back: #{t.desc}"
                 begin
                   t.rollback(remote_host)

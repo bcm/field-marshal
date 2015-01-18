@@ -12,8 +12,9 @@ module FieldMarshal
   module Tasks
     autoload :ApplyDatabaseMigrations,  'field_marshal/tasks/apply_database_migrations'
     autoload :CloneGitRepo,             'field_marshal/tasks/clone_git_repo'
-    autoload :DetectDatabaseMigrations, 'field_marshal/tasks/detect_database_migrations'
     autoload :DeployApplication,        'field_marshal/tasks/deploy_application'
+    autoload :DetectDatabaseMigrations, 'field_marshal/tasks/detect_database_migrations'
+    autoload :RestartApplication,       'field_marshal/tasks/restart_application'
     autoload :ScaleDown,                'field_marshal/tasks/scale_down'
     autoload :ScaleUp,                  'field_marshal/tasks/scale_up'
     autoload :TurnOnMaintenanceMode,    'field_marshal/tasks/turn_on_maintenance_mode'

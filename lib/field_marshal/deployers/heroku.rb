@@ -30,10 +30,12 @@ module FieldMarshal
         end
       end
 
+      def pending_migrations?
+        migration_count > 0
+      end
+
       def turn_on_maintenance_mode(remote_host)
-        if migration_count > 0
-          api.app.update(app_name, maintenance: true)
-        end
+        api.app.update(app_name, maintenance: true)
       end
 
       def turn_off_maintenance_mode(remote_host)
@@ -41,12 +43,10 @@ module FieldMarshal
       end
 
       def scale_down(remote_host)
-        if migration_count > 0
-          updates = process_counts.each_with_object([]) do |(process_type, count), m|
-            m << {'process' => process_type.to_s, 'quantity' => 0} if count > 0
-          end
-          api.formation.batch_update(app_name, 'updates' => updates)
+        updates = process_counts.each_with_object([]) do |(process_type, count), m|
+          m << {'process' => process_type.to_s, 'quantity' => 0} if count > 0
         end
+        api.formation.batch_update(app_name, 'updates' => updates)
       end
 
       def scale_up(remote_host)
@@ -74,16 +74,18 @@ module FieldMarshal
       end
 
       def apply_database_migrations(remote_host)
-        if migration_count > 0
-          dyno = api.dyno.create(app_name, command: 'rake db:migrate')
-          poll_one_off_dyno_until_done(dyno)
-        end
+        dyno = api.dyno.create(app_name, command: 'rake db:migrate')
+        poll_one_off_dyno_until_done(dyno)
       end
 
       def roll_back_database_migrations(remote_host)
-        if migration_count > 0
-          dyno = api.dyno.create(app_name, command: "rake db:rollback STEP=#{migration_count}")
-          poll_one_off_dyno_until_done(dyno)
+        dyno = api.dyno.create(app_name, command: "rake db:rollback STEP=#{migration_count}")
+        poll_one_off_dyno_until_done(dyno)
+      end
+
+      def restart_application(remote_host)
+        api.dyno.list(app_name).each do |dyno|
+          api.dyno.restart(app_name, dyno['id'])
         end
       end
 
